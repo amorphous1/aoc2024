@@ -4,7 +4,7 @@ pub fn day01a(input: &str) -> u32 {
     let mut left: Vec<u32> = Vec::new();
     let mut right: Vec<u32> = Vec::new();
     input.split('\n').for_each(|line| {
-        let mut it = line.split_ascii_whitespace().into_iter();
+        let mut it = line.split_ascii_whitespace();
         left.push(it.next().unwrap().parse().unwrap());
         right.push(it.next().unwrap().parse().unwrap());
     });
@@ -22,11 +22,11 @@ pub fn day01b(input: &str) -> u32 {
     let mut left: Vec<u32> = Vec::new();
     let mut right_counts: HashMap<u32, u8> = HashMap::new();
     input.split('\n').for_each(|line| {
-        let mut it = line.split_ascii_whitespace().into_iter();
+        let mut it = line.split_ascii_whitespace();
         left.push(it.next().unwrap().parse().unwrap());
-        let elem = it.next().unwrap().parse().unwrap();
-        let option = right_counts.get(&elem).unwrap_or(&0);
-        right_counts.insert(elem, *option + 1);
+        let right_elem = it.next().unwrap().parse().unwrap();
+        let existing_count = right_counts.get(&right_elem).unwrap_or(&0);
+        right_counts.insert(right_elem, existing_count + 1);
     });
 
     let mut result: u32 = 0;
