@@ -6,7 +6,8 @@ fn main() -> Result<(), std::io::Error> {
     // println!("{}", aoc2024::day01b(day01_input));
 
     let day02_input = &fs::read_to_string("inputs/day02.input")?;
-    println!("{}", aoc2024::day02a(day02_input));
+    println!("{}", aoc2024::day02(day02_input, false));
+    println!("{}", aoc2024::day02(day02_input, true));
 
     Ok(())
 }

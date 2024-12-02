@@ -37,7 +37,7 @@ pub fn day01b(input: &str) -> u32 {
     return result;
 }
 
-fn is_safe(report: Vec<i32>) -> bool {
+fn is_safe(report: &Vec<i32>) -> bool {
     let mut last_sig = (report[1] - report[0]).signum();
     for i  in 1..report.len() {
         let delta = report[i] - report[i-1];
@@ -49,10 +49,21 @@ fn is_safe(report: Vec<i32>) -> bool {
     return true;
 }
 
-pub fn day02a(input: &str) -> usize {
+fn is_safe_using_dampener(report: &Vec<i32>) -> bool {
+    for i in 0..report.len() {
+        let mut dampened_report = report.clone();
+        dampened_report.remove(i);
+        if is_safe(&dampened_report) {
+            return true;
+        }
+    }
+    return false;
+}
+
+pub fn day02(input: &str, use_dampener: bool) -> usize {
     return input.split('\n').filter(|line| {
         let report = line.split_ascii_whitespace().map(|num| num.parse().unwrap()).collect();
-        return is_safe(report);
+        return if use_dampener { is_safe_using_dampener(&report) } else { is_safe(&report) };
     }).count();
 }
 
@@ -82,6 +93,7 @@ mod tests {
 8 6 4 4 1
 1 3 6 7 9";
 
-        assert_eq!(day02a(sample_input), 2);
+        assert_eq!(day02(sample_input, false), 2);
+        assert_eq!(day02(sample_input, true), 4);
     }
 }
