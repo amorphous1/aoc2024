@@ -51,8 +51,7 @@ fn is_safe(report: &Vec<i32>) -> bool {
 
 fn is_safe_using_dampener(report: &Vec<i32>) -> bool {
     for i in 0..report.len() {
-        let mut dampened_report = report.clone();
-        dampened_report.remove(i);
+        let dampened_report = [&report[..i], &report[i+1..]].concat();
         if is_safe(&dampened_report) {
             return true;
         }
