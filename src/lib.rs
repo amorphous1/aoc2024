@@ -79,6 +79,14 @@ pub fn day03a(input: &str) -> u32 {
     return result;
 }
 
+pub fn day03b(input: &str) -> u32 {
+    let mut result = 0;
+    input.split("do()").for_each(|do_block| {
+        result += day03a(do_block.split("don't()").into_iter().next().unwrap());
+    });
+    return result;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -111,8 +119,7 @@ mod tests {
 
     #[test]
     fn day03_samples() {
-        let sample_input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
-
-        assert_eq!(day03a(sample_input), 161);
+        assert_eq!(day03a("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"), 161);
+        assert_eq!(day03b("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"), 48);
     }
 }

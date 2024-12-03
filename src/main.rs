@@ -11,6 +11,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let day03_input = &fs::read_to_string("inputs/day03.input")?;
     println!("{}", aoc2024::day03a(day03_input));
+    println!("{}", aoc2024::day03b(day03_input));
 
     Ok(())
 }
