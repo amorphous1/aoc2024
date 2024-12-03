@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use regex::Regex;
+
 pub fn day01a(input: &str) -> u32 {
     let mut left: Vec<u32> = Vec::new();
     let mut right: Vec<u32> = Vec::new();
@@ -66,6 +68,17 @@ pub fn day02(input: &str, use_dampener: bool) -> usize {
     }).count();
 }
 
+pub fn day03a(input: &str) -> u32 {
+    let re = Regex::new(r"mul\(([0-9]{1,3}),([0-9]{1,3})\)").unwrap();
+    let mut result = 0;
+    for (_, [factor1, factor2]) in re.captures_iter(input).map(|c| c.extract()) {
+        let factor1: u32 = factor1.parse().unwrap();
+        let factor2: u32 = factor2.parse().unwrap();
+        result += factor1 * factor2;
+    }
+    return result;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -94,5 +107,12 @@ mod tests {
 
         assert_eq!(day02(sample_input, false), 2);
         assert_eq!(day02(sample_input, true), 4);
+    }
+
+    #[test]
+    fn day03_samples() {
+        let sample_input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
+
+        assert_eq!(day03a(sample_input), 161);
     }
 }
