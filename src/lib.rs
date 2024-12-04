@@ -113,6 +113,23 @@ fn find_in(grid: &Vec<Vec<char>>, term: &Vec<char>, x: i32, y: i32, directions: 
         .sum();
 }
 
+pub fn day04b(input: &str) -> u32 {
+    let grid: Vec<Vec<char>> = input.split('\n').map(|line| line.chars().collect()).collect();
+    let mut result = 0;
+
+    for y in 1..grid.len() - 1 {
+        for x in 1..grid[0].len() - 1 {
+            if grid[y][x] == 'A' &&
+                (grid[y-1][x-1] == 'M' && grid[y+1][x+1] == 'S' || grid[y-1][x-1] == 'S' && grid[y+1][x+1] == 'M') &&
+                (grid[y-1][x+1] == 'M' && grid[y+1][x-1] == 'S' || grid[y-1][x+1] == 'S' && grid[y+1][x-1] == 'M') {
+                result += 1;
+            }
+        }
+    }
+    return result;
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -151,7 +168,7 @@ mod tests {
 
     #[test]
     fn day04_samples() {
-        assert_eq!(day04a("MMMSXXMASM
+        let sample_input = "MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
 MSAMASMSMX
@@ -160,7 +177,10 @@ XXAMMXXAMA
 SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
-MXMXAXMASX"), 18);
+MXMXAXMASX";
+
+        assert_eq!(day04a(sample_input), 18);
+        assert_eq!(day04b(sample_input), 9);
     }
 
 }
