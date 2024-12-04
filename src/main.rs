@@ -9,9 +9,12 @@ fn main() -> Result<(), std::io::Error> {
     // println!("{}", aoc2024::day02(day02_input, false));
     // println!("{}", aoc2024::day02(day02_input, true));
 
-    let day03_input = &fs::read_to_string("inputs/day03.input")?;
-    println!("{}", aoc2024::day03a(day03_input));
-    println!("{}", aoc2024::day03b(day03_input));
+    // let day03_input = &fs::read_to_string("inputs/day03.input")?;
+    // println!("{}", aoc2024::day03a(day03_input));
+    // println!("{}", aoc2024::day03b(day03_input));
+
+    let day04_input = &fs::read_to_string("inputs/day04.input")?;
+    println!("{}", aoc2024::day04a(day04_input));
 
     Ok(())
 }

@@ -87,6 +87,32 @@ pub fn day03b(input: &str) -> u32 {
     return result;
 }
 
+pub fn day04a(input: &str) -> u32 {
+    let grid: Vec<Vec<char>> = input.split('\n').map(|line| line.chars().collect()).collect();
+    let xmas = vec!['X', 'M', 'A', 'S'];
+    let mut result = 0;
+    let directions = vec![(-1,-1), (0,-1), (1,-1), (1,0), (1,1), (0,1), (-1,1), (-1,0)];
+
+    for y in 0..grid.len() as i32 {
+        for x in 0..grid[0].len() as i32 {
+            result += find_in(&grid, &xmas, x, y, &directions);
+        }
+    }
+    return result;
+}
+
+fn find_in(grid: &Vec<Vec<char>>, term: &Vec<char>, x: i32, y: i32, directions: &Vec<(i32,i32)>) -> u32 {
+    if y < 0 || y >= grid.len() as i32 || x < 0 || x >= grid[y as usize].len() as i32 || grid[y as usize][x as usize] != term[0] {
+        return 0;
+    }
+    if term.len() == 1 {
+        return 1;
+    }
+    return directions.iter()
+        .map(|dir| find_in(grid, &term[1..].to_vec(), x + dir.0, y + dir.1, &vec![*dir]))
+        .sum();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -122,4 +148,19 @@ mod tests {
         assert_eq!(day03a("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"), 161);
         assert_eq!(day03b("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"), 48);
     }
+
+    #[test]
+    fn day04_samples() {
+        assert_eq!(day04a("MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX"), 18);
+    }
+
 }
