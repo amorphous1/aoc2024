@@ -8,8 +8,23 @@ struct Guard {
 
 impl Guard {
     const  DIRECTIONS: [(i16, i16); 4] = [(0, -1), (1, 0), (0, 1), (-1, 0)];
-    pub fn step(&self) -> (i16, i16) {
-        return (self.position.0 + Self::DIRECTIONS[self.orientation].0, self.position.1 + Self::DIRECTIONS[self.orientation].1);
+    fn maybe_step(&self, new_orientation: usize) -> (i16, i16) {
+        return (self.position.0 + Self::DIRECTIONS[new_orientation].0, self.position.1 + Self::DIRECTIONS[new_orientation].1);
+    }
+
+    pub fn step(&self, walls: &HashSet<(i16, i16)>) -> Guard {
+        let mut  new_orientation = self.orientation;
+        while walls.contains(&self.maybe_step(new_orientation)) {
+            new_orientation = (new_orientation + 1) % Self::DIRECTIONS.len();
+        }
+        return  Guard {
+            position: self.maybe_step(new_orientation),
+            orientation: new_orientation,
+        };
+    }
+
+    pub fn is_out_of_bounds(&self, size: i16) -> bool {
+        return  self.position.0 < 0 || self.position.0 >= size || self.position.1 < 0 || self.position.1 >= size;
     }
 }
 
@@ -44,20 +59,10 @@ fn parse_lab_map(input: &str) -> LabMap {
 pub fn visited_positions(input: &str) -> usize {
     let lab_map = parse_lab_map(input);
     let mut guard = lab_map.guard.clone();
-    let directions = [(0, -1), (1, 0), (0, 1), (-1, 0)];
     let mut visited = HashSet::new();
-    loop {
+    while !guard.is_out_of_bounds(lab_map.size) {
         visited.insert(guard.position);
-        while lab_map.walls.contains(&(guard.position.0 + directions[guard.orientation].0, guard.position.1 + directions[guard.orientation].1)) {
-            guard.orientation = (guard.orientation + 1) % 4;
-        }
-        guard = Guard {
-            position: (guard.position.0 + directions[guard.orientation].0, guard.position.1 + directions[guard.orientation].1),
-            orientation: guard.orientation,
-        };
-        if guard.position.0 < 0 || guard.position.0 >= lab_map.size || guard.position.1 < 0 || guard.position.1 >= lab_map.size {
-            break;
-        }
+        guard = guard.step(&lab_map.walls);
     }
     return visited.len();
 }
@@ -67,39 +72,32 @@ fn has_loop(lab_map: &LabMap, obstruction: (i16, i16)) -> bool {
         return false
     }
     let mut guard = lab_map.guard.clone();
+    let mut walls = lab_map.walls.clone();
+    walls.insert(obstruction);
     let mut visited = HashSet::new();
-    loop {
+    while !guard.is_out_of_bounds(lab_map.size) {
         visited.insert(guard.clone());
-        while lab_map.walls.contains(&guard.step()) || obstruction == guard.step() {
-            guard.orientation = (guard.orientation + 1) % 4;
-        }
-        guard = Guard {
-            position: guard.step(),
-            orientation: guard.orientation,
-        };
-        if guard.position.0 < 0 || guard.position.0 >= lab_map.size || guard.position.1 < 0 || guard.position.1 >= lab_map.size {
-            return false;
-        }
+        guard = guard.step(&walls);
         if visited.contains(&guard) {
             return true;
         }
     }
+    return false;
 }
 
 pub fn loop_obstructions(input: &str) -> usize {
     let lab_map = parse_lab_map(input);
     let mut result = 0;
     for y in 0..lab_map.size {
-        println!("row: {}", y);
-        for x in 0.. lab_map.size {
+        for x in 0..lab_map.size {
             if has_loop(&lab_map, (x, y)) {
                 result += 1;
             }
         }
     }
-
     return result;
 }
+
 
 #[cfg(test)]
 mod tests {

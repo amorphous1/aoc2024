@@ -1,4 +1,5 @@
 use std::fs;
+use std::time::SystemTime;
 
 mod day01;
 mod day02;
@@ -30,7 +31,8 @@ fn main() -> Result<(), std::io::Error> {
 
     let day06_input = &fs::read_to_string("inputs/day06.txt")?;
     println!("{}", day06::visited_positions(day06_input));
+    let start = SystemTime::now();
     println!("{}", day06::loop_obstructions(day06_input));
-
+    println!("took {:?}",start.elapsed().unwrap());
     Ok(())
 }
