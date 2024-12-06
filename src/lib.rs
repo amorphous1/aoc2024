@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use regex::Regex;
@@ -169,6 +170,28 @@ pub fn day05a(input: &str) -> u32 {
     return result;
 }
 
+pub fn day05b(input: &str) -> u32 {
+    let [rules, updates] = input.split("\n\n").take(2).collect::<Vec<&str>>().try_into().unwrap();
+    let is_before = parse_rules(rules);
+    let mut result = 0;
+    parse_updates(updates).iter().for_each(|update| {
+        let mut sorted_update = update.clone();
+        sorted_update.sort_by(|a,b| {
+            if is_before.get(a).is_some_and(|later_pages| later_pages.contains(b)) {
+                return Ordering::Less
+            }
+            if is_before.get(b).is_some_and(|later_pages| later_pages.contains(a)) {
+                return Ordering::Greater
+            }
+            return Ordering::Equal;
+        });
+        if *update != sorted_update {
+            result += sorted_update[sorted_update.len()/2] as u32;
+        }
+    });
+    return result;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -254,6 +277,6 @@ MXMXAXMASX";
 97,13,75,29,47";
 
         assert_eq!(day05a(sample_input), 143);
-        // assert_eq!(day05b(sample_input), 123);
+        assert_eq!(day05b(sample_input), 123);
     }
 }
