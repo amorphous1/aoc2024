@@ -129,6 +129,45 @@ pub fn day04b(input: &str) -> u32 {
     return result;
 }
 
+fn parse_rules(rules: &str) -> HashMap<u8, Vec<u8>> {
+    let mut result = HashMap::new();
+    rules.split('\n').for_each(|line| {
+        let [before, after] = line.split('|').take(2).map(|num| num.parse().unwrap()).collect::<Vec<_>>().try_into().unwrap();
+        result.entry(before).or_insert(Vec::new()).push(after);
+    });
+    return result;
+}
+
+fn parse_updates(updates: &str) -> Vec<Vec<u8>> {
+    return updates.split('\n').map(|update| {
+        return update.split(',').map(|num| num.parse().unwrap()).collect::<Vec<u8>>();
+    }).collect();
+}
+
+fn is_correct_order(update: &Vec<u8>, rules: &HashMap<u8, Vec<u8>>) -> bool {
+    for a in 1..update.len()  {
+        for b in 0..a {
+            let after = &update[a];
+            let before = &update[b];
+            if rules.get(after).is_some_and(|later_pages| later_pages.contains(before)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+pub fn day05a(input: &str) -> u32 {
+    let [rules, updates] = input.split("\n\n").take(2).collect::<Vec<&str>>().try_into().unwrap();
+    let is_before = parse_rules(rules);
+    let mut result = 0;
+    parse_updates(updates).iter().for_each(|update| {
+        if is_correct_order(update, &is_before) {
+            result += update[update.len()/2] as u32;
+        }
+    });
+    return result;
+}
 
 #[cfg(test)]
 mod tests {
@@ -183,4 +222,38 @@ MXMXAXMASX";
         assert_eq!(day04b(sample_input), 9);
     }
 
+    #[test]
+    fn day05_samples() {
+        let sample_input = "47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
+
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47";
+
+        assert_eq!(day05a(sample_input), 143);
+        // assert_eq!(day05b(sample_input), 123);
+    }
 }

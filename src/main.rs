@@ -13,9 +13,12 @@ fn main() -> Result<(), std::io::Error> {
     // println!("{}", aoc2024::day03a(day03_input));
     // println!("{}", aoc2024::day03b(day03_input));
 
-    let day04_input = &fs::read_to_string("inputs/day04.input")?;
-    println!("{}", aoc2024::day04a(day04_input));
-    println!("{}", aoc2024::day04b(day04_input));
+    // let day04_input = &fs::read_to_string("inputs/day04.input")?;
+    // println!("{}", aoc2024::day04a(day04_input));
+    // println!("{}", aoc2024::day04b(day04_input));
+
+    let day05_input = &fs::read_to_string("inputs/day05.input")?;
+    println!("{}", aoc2024::day05a(day05_input));
 
     Ok(())
 }
