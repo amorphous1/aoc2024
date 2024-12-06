@@ -5,6 +5,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -26,6 +27,9 @@ fn main() -> Result<(), std::io::Error> {
     let day05_input = &fs::read_to_string("inputs/day05.txt")?;
     println!("{}", day05::day05(day05_input, true));
     println!("{}", day05::day05(day05_input, false));
+
+    let day06_input = &fs::read_to_string("inputs/day06.txt")?;
+    println!("{}", day06::visited_positions(day06_input));
 
     Ok(())
 }
