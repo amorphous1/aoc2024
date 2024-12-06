@@ -30,6 +30,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let day06_input = &fs::read_to_string("inputs/day06.txt")?;
     println!("{}", day06::visited_positions(day06_input));
+    println!("{}", day06::loop_obstructions(day06_input));
 
     Ok(())
 }

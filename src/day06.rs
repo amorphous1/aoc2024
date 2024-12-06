@@ -1,9 +1,16 @@
 use std::collections::HashSet;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Guard {
     position: (i16, i16),
     orientation: usize,
+}
+
+impl Guard {
+    const  DIRECTIONS: [(i16, i16); 4] = [(0, -1), (1, 0), (0, 1), (-1, 0)];
+    pub fn step(&self) -> (i16, i16) {
+        return (self.position.0 + Self::DIRECTIONS[self.orientation].0, self.position.1 + Self::DIRECTIONS[self.orientation].1);
+    }
 }
 
 #[derive(Debug)]
@@ -38,7 +45,6 @@ pub fn visited_positions(input: &str) -> usize {
     let lab_map = parse_lab_map(input);
     let mut guard = lab_map.guard.clone();
     let directions = [(0, -1), (1, 0), (0, 1), (-1, 0)];
-    println!("{:?}", lab_map);
     let mut visited = HashSet::new();
     loop {
         visited.insert(guard.position);
@@ -54,6 +60,45 @@ pub fn visited_positions(input: &str) -> usize {
         }
     }
     return visited.len();
+}
+
+fn has_loop(lab_map: &LabMap, obstruction: (i16, i16)) -> bool {
+    if obstruction == lab_map.guard.position || lab_map.walls.contains(&obstruction) {
+        return false
+    }
+    let mut guard = lab_map.guard.clone();
+    let mut visited = HashSet::new();
+    loop {
+        visited.insert(guard.clone());
+        while lab_map.walls.contains(&guard.step()) || obstruction == guard.step() {
+            guard.orientation = (guard.orientation + 1) % 4;
+        }
+        guard = Guard {
+            position: guard.step(),
+            orientation: guard.orientation,
+        };
+        if guard.position.0 < 0 || guard.position.0 >= lab_map.size || guard.position.1 < 0 || guard.position.1 >= lab_map.size {
+            return false;
+        }
+        if visited.contains(&guard) {
+            return true;
+        }
+    }
+}
+
+pub fn loop_obstructions(input: &str) -> usize {
+    let lab_map = parse_lab_map(input);
+    let mut result = 0;
+    for y in 0..lab_map.size {
+        println!("row: {}", y);
+        for x in 0.. lab_map.size {
+            if has_loop(&lab_map, (x, y)) {
+                result += 1;
+            }
+        }
+    }
+
+    return result;
 }
 
 #[cfg(test)]
@@ -74,5 +119,6 @@ mod tests {
 ......#...";
 
         assert_eq!(visited_positions(sample_input), 41);
+        assert_eq!(loop_obstructions(sample_input), 6);
     }
 }
