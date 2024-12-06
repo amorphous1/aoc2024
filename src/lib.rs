@@ -145,32 +145,7 @@ fn parse_updates(updates: &str) -> Vec<Vec<u8>> {
     }).collect();
 }
 
-fn is_correct_order(update: &Vec<u8>, rules: &HashMap<u8, Vec<u8>>) -> bool {
-    for a in 1..update.len()  {
-        for b in 0..a {
-            let after = &update[a];
-            let before = &update[b];
-            if rules.get(after).is_some_and(|later_pages| later_pages.contains(before)) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-pub fn day05a(input: &str) -> u32 {
-    let [rules, updates] = input.split("\n\n").take(2).collect::<Vec<&str>>().try_into().unwrap();
-    let is_before = parse_rules(rules);
-    let mut result = 0;
-    parse_updates(updates).iter().for_each(|update| {
-        if is_correct_order(update, &is_before) {
-            result += update[update.len()/2] as u32;
-        }
-    });
-    return result;
-}
-
-pub fn day05b(input: &str) -> u32 {
+pub fn day05(input: &str, count_sorted: bool) -> u32 {
     let [rules, updates] = input.split("\n\n").take(2).collect::<Vec<&str>>().try_into().unwrap();
     let is_before = parse_rules(rules);
     let mut result = 0;
@@ -185,7 +160,7 @@ pub fn day05b(input: &str) -> u32 {
             }
             return Ordering::Equal;
         });
-        if *update != sorted_update {
+        if (count_sorted && *update == sorted_update) || (!count_sorted && *update != sorted_update) {
             result += sorted_update[sorted_update.len()/2] as u32;
         }
     });
@@ -276,7 +251,7 @@ MXMXAXMASX";
 61,13,29
 97,13,75,29,47";
 
-        assert_eq!(day05a(sample_input), 143);
-        assert_eq!(day05b(sample_input), 123);
+        assert_eq!(day05(sample_input, true), 143);
+        assert_eq!(day05(sample_input, false), 123);
     }
 }

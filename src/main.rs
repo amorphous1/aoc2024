@@ -18,8 +18,8 @@ fn main() -> Result<(), std::io::Error> {
     // println!("{}", aoc2024::day04b(day04_input));
 
     let day05_input = &fs::read_to_string("inputs/day05.input")?;
-    println!("{}", aoc2024::day05a(day05_input));
-    println!("{}", aoc2024::day05b(day05_input));
+    println!("{}", aoc2024::day05(day05_input, true));
+    println!("{}", aoc2024::day05(day05_input, false));
 
     Ok(())
 }
