@@ -56,7 +56,7 @@ fn parse_lab_map(input: &str) -> LabMap {
     }
 }
 
-pub fn visited_positions(input: &str) -> usize {
+pub fn visited_positions(input: &str) -> HashSet<(i16, i16)> {
     let lab_map = parse_lab_map(input);
     let mut guard = lab_map.guard.clone();
     let mut visited = HashSet::new();
@@ -64,7 +64,7 @@ pub fn visited_positions(input: &str) -> usize {
         visited.insert(guard.position);
         guard = guard.step(&lab_map.walls);
     }
-    return visited.len();
+    return visited;
 }
 
 fn has_loop(lab_map: &LabMap, obstruction: (i16, i16)) -> bool {
@@ -87,15 +87,9 @@ fn has_loop(lab_map: &LabMap, obstruction: (i16, i16)) -> bool {
 
 pub fn loop_obstructions(input: &str) -> usize {
     let lab_map = parse_lab_map(input);
-    let mut result = 0;
-    for y in 0..lab_map.size {
-        for x in 0..lab_map.size {
-            if has_loop(&lab_map, (x, y)) {
-                result += 1;
-            }
-        }
-    }
-    return result;
+    return visited_positions(input).iter().map(|position| {
+       if has_loop(&lab_map, *position) { 1 } else { 0 }
+    }).sum();
 }
 
 
@@ -116,7 +110,7 @@ mod tests {
 #.........
 ......#...";
 
-        assert_eq!(visited_positions(sample_input), 41);
+        assert_eq!(visited_positions(sample_input).len(), 41);
         assert_eq!(loop_obstructions(sample_input), 6);
     }
 }

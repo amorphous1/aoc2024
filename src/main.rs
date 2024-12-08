@@ -30,7 +30,7 @@ fn main() -> Result<(), std::io::Error> {
     println!("{}", day05::day05(day05_input, false));
 
     let day06_input = &fs::read_to_string("inputs/day06.txt")?;
-    println!("{}", day06::visited_positions(day06_input));
+    println!("{}", day06::visited_positions(day06_input).len());
     let start = SystemTime::now();
     println!("{}", day06::loop_obstructions(day06_input));
     println!("took {:?}",start.elapsed().unwrap());
