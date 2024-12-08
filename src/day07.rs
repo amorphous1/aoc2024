@@ -1,4 +1,4 @@
-fn can_be_solved(result: usize, operands: &Vec<usize>) -> bool {
+fn can_be_solved(result: usize, operands: &Vec<usize>, use_concat_operator: bool) -> bool {
     if operands.len() == 0 {
         return false;
     }
@@ -8,11 +8,16 @@ fn can_be_solved(result: usize, operands: &Vec<usize>) -> bool {
     }
     let op2 = *operands.get(1).unwrap();
     let rest = operands[2..].to_vec();
-    return can_be_solved(result, &[&[op1 + op2], &rest[..]].concat()) ||
-        can_be_solved(result, &[&[op1 * op2], &rest[..]].concat());
+    let solvable = can_be_solved(result, &[&[op1 + op2], &rest[..]].concat(), use_concat_operator) ||
+        can_be_solved(result, &[&[op1 * op2], &rest[..]].concat(), use_concat_operator);
+    if use_concat_operator && !solvable {
+        let op1op2 = format!("{}{}", op1.to_string(), op2.to_string()).parse().unwrap();
+        return can_be_solved(result, &[&[op1op2], &rest[..]].concat(), use_concat_operator);
+    }
+    return solvable;
 }
 
-pub fn part1(input: &str) -> usize {
+pub fn sum_solvable_equations(input: &str, use_concat_operator: bool) -> usize {
     let equations: Vec<(usize, Vec<usize>)> = input.split('\n').map(|line| {
         let mut it = line.split(": ");
         let left = it.next().unwrap().parse().unwrap();
@@ -21,9 +26,10 @@ pub fn part1(input: &str) -> usize {
     }).collect::<Vec<_>>();
 
     return equations.iter().map(|equation| {
-        if can_be_solved(equation.0, &equation.1) { equation.0 } else { 0 }
+        if can_be_solved(equation.0, &equation.1, use_concat_operator) { equation.0 } else { 0 }
     }).sum();
 }
+
 
 #[cfg(test)]
 mod tests {
@@ -41,6 +47,7 @@ mod tests {
 21037: 9 7 18 13
 292: 11 6 16 20";
 
-        assert_eq!(part1(sample_input), 3749);
+        assert_eq!(sum_solvable_equations(sample_input, false), 3749);
+        assert_eq!(sum_solvable_equations(sample_input, true), 11387);
     }
 }

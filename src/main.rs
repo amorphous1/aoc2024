@@ -35,7 +35,8 @@ fn main() -> Result<(), std::io::Error> {
     print_and_time(|| day06::loop_obstructions(day06_input));
 
     let day07_input = &fs::read_to_string("inputs/day07.txt")?;
-    print_and_time(|| day07::part1(day07_input));
+    print_and_time(|| day07::sum_solvable_equations(day07_input, false));
+    print_and_time(|| day07::sum_solvable_equations(day07_input, true));
 
     Ok(())
 }
