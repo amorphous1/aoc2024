@@ -7,6 +7,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -32,6 +33,10 @@ fn main() -> Result<(), std::io::Error> {
     let day06_input = &fs::read_to_string("inputs/day06.txt")?;
     print_and_time(|| day06::visited_positions(day06_input).len());
     print_and_time(|| day06::loop_obstructions(day06_input));
+
+    let day07_input = &fs::read_to_string("inputs/day07.txt")?;
+    print_and_time(|| day07::part1(day07_input));
+
     Ok(())
 }
 
