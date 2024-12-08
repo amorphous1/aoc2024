@@ -41,6 +41,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let day08_input = &fs::read_to_string("inputs/day08.txt")?;
     print_and_time(|| day08::unique_antinodes(day08_input));
+    print_and_time(|| day08::unique_antinodes2(day08_input));
     Ok(())
 }
 
