@@ -90,46 +90,26 @@ fn has_loop(lab_map: &LabMap, obstruction: (i16, i16)) -> bool {
 }
 
 pub fn loop_obstructions(input: &str) -> usize {
-    let lab_map1 = parse_lab_map(input);
-    let lab_map2 = parse_lab_map(input);
-    let lab_map3 = parse_lab_map(input);
-    let lab_map4 = parse_lab_map(input);
-    let mut positions1 = visited_positions(input).into_iter().collect::<Vec<_>>();
-    let mut positions2 = positions1.split_off(positions1.len() / 4);
-    let mut positions3 = positions2.split_off(positions2.len() / 3);
-    let positions4 = positions3.split_off(positions3.len() / 2);
+    let lab_map = parse_lab_map(input);
+    let mut positions = visited_positions(input).into_iter().collect::<Vec<_>>();
 
-    let (tx1, rx): (Sender<usize>, Receiver<_>) = mpsc::channel();
-    let tx2: Sender<usize> = tx1.clone();
-    let tx3 = tx1.clone();
-    let tx4 = tx1.clone();
+    let (tx, rx): (Sender<usize>, Receiver<_>) = mpsc::channel();
+    let thread_count = 8;
+    let batch_size = positions.len() / thread_count + 1;
 
-    thread::spawn(move || {
-        let result = positions1.iter().map(|position| {
-            if has_loop(&lab_map1, *position) { 1 } else { 0 }
-        }).sum();
-        tx1.send(result).unwrap();
-    });
-    thread::spawn(move || {
-        let result = positions2.iter().map(|position| {
-            if has_loop(&lab_map2, *position) { 1 } else { 0 }
-        }).sum();
-        tx2.send(result).unwrap();
-    });
-    thread::spawn(move || {
-        let result = positions3.iter().map(|position| {
-            if has_loop(&lab_map3, *position) { 1 } else { 0 }
-        }).sum();
-        tx3.send(result).unwrap();
-    });
-    thread::spawn(move || {
-        let result = positions4.iter().map(|position| {
-            if has_loop(&lab_map4, *position) { 1 } else { 0 }
-        }).sum();
-        tx4.send(result).unwrap();
-    });
+    for _ in  0..thread_count {
+        let tx_local = tx.clone();
+        let lab_map_local = lab_map.clone();
+        let batch = positions.drain(..batch_size.min(positions.len())).collect::<Vec<_>>();
+        thread::spawn(move || {
+            let result = batch.iter().map(|position| {
+                if has_loop(&lab_map_local, *position) { 1 } else { 0 }
+            }).sum();
+            tx_local.send(result).unwrap();
+        });
+    }
 
-    return rx.iter().sum();
+    return rx.iter().take(thread_count).sum();
 }
 
 
