@@ -9,6 +9,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -42,6 +43,10 @@ fn main() -> Result<(), std::io::Error> {
     let day08_input = &fs::read_to_string("inputs/day08.txt")?;
     print_and_time(|| day08::unique_antinodes(day08_input));
     print_and_time(|| day08::unique_antinodes2(day08_input));
+
+    let day09_input = &fs::read_to_string("inputs/day09.txt")?;
+    print_and_time(|| day09::checksum(day09_input));
+
     Ok(())
 }
 
