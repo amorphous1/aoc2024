@@ -10,6 +10,7 @@ mod day06;
 mod day07;
 mod day08;
 mod day09;
+mod day10;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -47,6 +48,9 @@ fn main() -> Result<(), std::io::Error> {
     let day09_input = &fs::read_to_string("inputs/day09.txt")?;
     print_and_time(|| day09::checksum(day09_input));
     print_and_time(|| day09::checksum2(day09_input));
+
+    let day10_input = &fs::read_to_string("inputs/day10.txt")?;
+    println!("{:?}", day10::trailhead_scores(day10_input));
 
     Ok(())
 }
