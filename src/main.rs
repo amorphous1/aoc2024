@@ -12,6 +12,7 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -56,6 +57,9 @@ fn main() -> Result<(), std::io::Error> {
     let day11_input = &fs::read_to_string("inputs/day11.txt")?;
     print_and_time(|| day11::day11(day11_input, 25));
     print_and_time(|| day11::day11(day11_input, 75));
+
+    let day12_input = &fs::read_to_string("inputs/day12.txt")?;
+    print_and_time(|| day12::fence_price(day12_input));
 
     Ok(())
 }
