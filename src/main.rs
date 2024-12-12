@@ -55,6 +55,8 @@ fn main() -> Result<(), std::io::Error> {
 
     let day11_input = &fs::read_to_string("inputs/day11.txt")?;
     print_and_time(|| day11::day11(day11_input, 25));
+    print_and_time(|| day11::day11(day11_input, 75));
+
     Ok(())
 }
 
