@@ -59,7 +59,8 @@ fn main() -> Result<(), std::io::Error> {
     print_and_time(|| day11::day11(day11_input, 75));
 
     let day12_input = &fs::read_to_string("inputs/day12.txt")?;
-    print_and_time(|| day12::fence_price(day12_input));
+    print_and_time(|| day12::fence_price(day12_input, false));
+    print_and_time(|| day12::fence_price(day12_input, true));
 
     Ok(())
 }
