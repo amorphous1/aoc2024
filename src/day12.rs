@@ -57,7 +57,7 @@ fn circumference(region: &HashSet<(i16, i16)>, region_plant: char, pos_to_plant:
 
 fn sides(region: &HashSet<(i16, i16)>, plant: char, pos_to_plant: &HashMap<(i16, i16), char>) -> usize {
     let mut result = 0;
-    let mut sorted_region = region.iter().cloned().collect::<Vec<_>>();
+    let mut sorted_region = region.iter().collect::<Vec<_>>();
     sorted_region.sort();
     sorted_region.iter().for_each(|(x, y)| {
         let top_plant = *pos_to_plant.get(&(*x, *y-1)).unwrap_or(&EMPTY);
