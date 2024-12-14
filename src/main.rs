@@ -64,7 +64,8 @@ fn main() -> Result<(), std::io::Error> {
     print_and_time(|| day12::fence_price(day12_input, true));
 
     let day13_input = &fs::read_to_string("inputs/day13.txt")?;
-    print_and_time(|| day13::min_tokens(day13_input));
+    print_and_time(|| day13::min_tokens(day13_input, 0));
+    print_and_time(|| day13::min_tokens(day13_input, 10000000000000));
 
     Ok(())
 }

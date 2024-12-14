@@ -1,28 +1,23 @@
-use std::cmp::min;
-
 use regex::Regex;
 
-pub fn min_tokens(input: &str) -> usize {
+pub fn min_tokens(input: &str, prize_offset: usize) -> u64 {
     let machine_regex = Regex::new(r"Button A.*\+([0-9]+),.*\+([0-9]+)\nButton B.*\+([0-9]+),.*\+([0-9]+)\nPrize.*=([0-9]+),.*=([0-9]+)").unwrap();
     let mut result = 0;
     for (_, [ax, ay, bx, by, x, y]) in machine_regex.captures_iter(input).map(|c| c.extract()) {
-        let ax: usize = ax.parse().unwrap();
-        let ay: usize = ay.parse().unwrap();
-        let bx: usize = bx.parse().unwrap();
-        let by: usize = by.parse().unwrap();
-        let x: usize = x.parse().unwrap();
-        let y: usize = y.parse().unwrap();
-        let max_push_a = min(100, min(x / ax, y / ay));
-        let mut min_tokens = usize::MAX;
-        for push_a in 0..max_push_a + 1 {
-            let (remaining_x, remaining_y) = (x - ax * push_a, y - ay * push_a);
-            let push_b = remaining_x / bx;
-            if push_b * bx == remaining_x && push_b * by == remaining_y {
-                min_tokens = min(min_tokens, 3 * push_a + push_b);
-            }
-        }
-        if min_tokens < usize::MAX {
-            result += min_tokens;
+        let (ax, ay) = (ax.parse::<f64>().unwrap(), ay.parse::<f64>().unwrap());
+        let (bx, by) = (bx.parse::<f64>().unwrap(), by.parse::<f64>().unwrap());
+        let x: f64 = x.parse::<f64>().unwrap() + prize_offset as f64;
+        let y: f64 = y.parse::<f64>().unwrap() + prize_offset as f64;
+
+        // found by solving two equations for a and b
+        //   a*ax + b*bx = x
+        //   a*ay + b*by = y
+        let a = (x - y*bx/by) / (ax - ay*bx/by);
+        let b = (y - ay*a) / by;
+
+        let (a,b, ax, ay, bx, by, x, y) = (a.round() as u64, b.round() as u64, ax as u64, ay as u64, bx as u64, by as u64, x as u64, y as u64);
+        if a * ax + b * bx == x && a * ay + b * by == y {
+            result += 3 * a + b;
         }
     }
     return result;
@@ -49,6 +44,7 @@ Prize: X=7870, Y=6450
 Button A: X+69, Y+23
 Button B: X+27, Y+71
 Prize: X=18641, Y=10279";
-        assert_eq!(min_tokens(sample_input), 480);
+        assert_eq!(min_tokens(sample_input, 0 ), 480);
+        assert_eq!(min_tokens(sample_input, 10000000000000), 875318608908);
     }
 }
