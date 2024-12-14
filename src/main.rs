@@ -14,6 +14,7 @@ mod day10;
 mod day11;
 mod day12;
 mod day13;
+mod day14;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -66,6 +67,9 @@ fn main() -> Result<(), std::io::Error> {
     let day13_input = &fs::read_to_string("inputs/day13.txt")?;
     print_and_time(|| day13::min_tokens(day13_input, 0));
     print_and_time(|| day13::min_tokens(day13_input, 10000000000000));
+
+    let day14_input = &fs::read_to_string("inputs/day14.txt")?;
+    print_and_time(|| day14::safety_factor(day14_input, 100, 101, 103));
 
     Ok(())
 }
