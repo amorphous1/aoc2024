@@ -28,30 +28,35 @@ pub fn safety_factor(input: &str, steps: u16, width: u16, height: u16) -> u64 {
     return quadrants[1] * quadrants[2] * quadrants[3] * quadrants[4];
 }
 
-pub fn print_robots(input: &str, steps: u16, width: u16, height: u16) {
+pub fn print_robots(input: &str, width: u16, height: u16) -> i32 {
     let line_regex = Regex::new(r"p=([-0-9]+),([-0-9]+) v=([-0-9]+),([-0-9]+)").unwrap();
-    let mut robots: HashSet<(i64, i64)> = HashSet::new();
-    for (_, [px, py, vx, vy]) in line_regex.captures_iter(input).map(|c| c.extract()) {
-        let (px, py, vx, vy) = (px.parse::<i64>().unwrap(), py.parse::<i64>().unwrap(), vx.parse::<i64>().unwrap(), vy.parse::<i64>().unwrap());
-        let mut px = (px + vx * steps as i64) % width as i64;
-        while px < 0 {
-            px += width as i64;
-        }
-        let mut py = (py + vy * steps as i64) % height as i64;
-        while py < 0 {
-            py += height as i64;
-        }
-        robots.insert((px, py));
-    }
-    if is_print_candidate(&robots) {
-        println!("{} ==================================================================================", steps);
-        for y in 0..height as i64 {
-            for x in 0..width as i64 {
-                print!("{}", if robots.contains(&(x, y)) { '#' } else { ' ' });
+    let mut last_candidate = 0;
+    for steps in 0..7000 {
+        let mut robots: HashSet<(i64, i64)> = HashSet::new();
+        for (_, [px, py, vx, vy]) in line_regex.captures_iter(input).map(|c| c.extract()) {
+            let (px, py, vx, vy) = (px.parse::<i64>().unwrap(), py.parse::<i64>().unwrap(), vx.parse::<i64>().unwrap(), vy.parse::<i64>().unwrap());
+            let mut px = (px + vx * steps as i64) % width as i64;
+            while px < 0 {
+                px += width as i64;
             }
-            println!();
+            let mut py = (py + vy * steps as i64) % height as i64;
+            while py < 0 {
+                py += height as i64;
+            }
+            robots.insert((px, py));
+        }
+        if is_print_candidate(&robots) {
+            println!("{} ==================================================================================", steps);
+            for y in 0..height as i64 {
+                for x in 0..width as i64 {
+                    print!("{}", if robots.contains(&(x, y)) { '#' } else { ' ' });
+                }
+                println!();
+            }
+            last_candidate = steps;
         }
     }
+    return last_candidate;
 }
 
 fn is_print_candidate(robots: &HashSet<(i64, i64)>) -> bool {
