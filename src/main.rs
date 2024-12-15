@@ -15,6 +15,7 @@ mod day11;
 mod day12;
 mod day13;
 mod day14;
+mod day15;
 
 fn main() -> Result<(), std::io::Error> {
     let day01_input = &fs::read_to_string("inputs/day01.txt")?;
@@ -71,6 +72,9 @@ fn main() -> Result<(), std::io::Error> {
     let day14_input = &fs::read_to_string("inputs/day14.txt")?;
     print_and_time("day 14 part 1",|| day14::safety_factor(day14_input, 100, 101, 103));
     print_and_time("day 14 part 2",|| day14::print_robots(day14_input, 101, 103));
+
+    let day15_input = &fs::read_to_string("inputs/day15.txt")?;
+    print_and_time("day 15 part 1",|| day15::gps_coordinates(day15_input));
 
     Ok(())
 }
